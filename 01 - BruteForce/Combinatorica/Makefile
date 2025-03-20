@@ -1,4 +1,3 @@
-
 # Ensure directories for object and binary files exist
 OBJDIR = build
 BINDIR = bin
