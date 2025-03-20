@@ -1,3 +1,4 @@
+
 # Ensure directories for object and binary files exist
 OBJDIR = build
 BINDIR = bin
@@ -20,11 +21,15 @@ OBJ_PERMUTAZIONI_TEST = $(OBJDIR)/PermutazioniTest.o
 OBJ_PERMUTAZIONI_RPT = $(OBJDIR)/PermutazioniRpt.o
 OBJ_PERMUTAZIONI_RPT_TEST = $(OBJDIR)/PermutazioniRptTest.o
 
+OBJ_SOTTOINSIEMI = $(OBJDIR)/Sottoinsiemi.o
+OBJ_SOTTOINSIEMI_TEST = $(OBJDIR)/SottoinsiemiTest.o
+
 # Define the final executables for the tests
 EXE_DISPOSIZIONI_TEST = $(BINDIR)/DisposizioniTest
 EXE_DISPOSIZIONI_RPT_TEST = $(BINDIR)/DisposizioniRptTest
 EXE_PERMUTAZIONI_TEST = $(BINDIR)/PermutazioniTest
 EXE_PERMUTAZIONI_RPT_TEST = $(BINDIR)/PermutazioniRptTest
+EXE_SOTTOINSIEMI_TEST = $(BINDIR)/SottoinsiemiTest
 
 # Ensure build and bin directories exist
 $(shell mkdir -p $(OBJDIR) $(BINDIR))
@@ -33,7 +38,8 @@ $(shell mkdir -p $(OBJDIR) $(BINDIR))
 objs: $(OBJ_DISPOSIZIONI) $(OBJ_DISPOSIZIONI_TEST) \
       $(OBJ_DISPOSIZIONI_RPT) $(OBJ_DISPOSIZIONI_RPT_TEST) \
       $(OBJ_PERMUTAZIONI) $(OBJ_PERMUTAZIONI_TEST) \
-      $(OBJ_PERMUTAZIONI_RPT) $(OBJ_PERMUTAZIONI_RPT_TEST)
+      $(OBJ_PERMUTAZIONI_RPT) $(OBJ_PERMUTAZIONI_RPT_TEST) \
+      $(OBJ_SOTTOINSIEMI) $(OBJ_SOTTOINSIEMI_TEST)
 
 # Disposizioni object and test object
 $(OBJDIR)/Disposizioni.o: Disposizioni.c
@@ -63,6 +69,13 @@ $(OBJDIR)/PermutazioniRpt.o: PermutazioniRpt.c
 $(OBJDIR)/PermutazioniRptTest.o: tests/PermutazioniRptTest.c
 	$(CC) $(MY_CFLAGS) $(CFLAGS) -c tests/PermutazioniRptTest.c -o $(OBJDIR)/PermutazioniRptTest.o
 
+# Sottoinsiemi object and test object
+$(OBJDIR)/Sottoinsiemi.o: Sottoinsiemi.c
+	$(CC) $(MY_CFLAGS) $(CFLAGS) -c Sottoinsiemi.c -o $(OBJDIR)/Sottoinsiemi.o
+
+$(OBJDIR)/SottoinsiemiTest.o: tests/SottoinsiemiTest.c
+	$(CC) $(MY_CFLAGS) $(CFLAGS) -c tests/SottoinsiemiTest.c -o $(OBJDIR)/SottoinsiemiTest.o
+
 # Linking the test executables with their object files
 $(EXE_DISPOSIZIONI_TEST): $(OBJ_DISPOSIZIONI) $(OBJ_DISPOSIZIONI_TEST)
 	$(CC) $(MY_CFLAGS) $(CFLAGS) -o $(EXE_DISPOSIZIONI_TEST) $(OBJ_DISPOSIZIONI) $(OBJ_DISPOSIZIONI_TEST)
@@ -75,6 +88,10 @@ $(EXE_PERMUTAZIONI_TEST): $(OBJ_PERMUTAZIONI) $(OBJ_PERMUTAZIONI_TEST)
 
 $(EXE_PERMUTAZIONI_RPT_TEST): $(OBJ_PERMUTAZIONI_RPT) $(OBJ_PERMUTAZIONI_RPT_TEST)
 	$(CC) $(MY_CFLAGS) $(CFLAGS) -o $(EXE_PERMUTAZIONI_RPT_TEST) $(OBJ_PERMUTAZIONI_RPT) $(OBJ_PERMUTAZIONI_RPT_TEST)
+
+# Sottoinsiemi test executable
+$(EXE_SOTTOINSIEMI_TEST): $(OBJ_SOTTOINSIEMI) $(OBJ_SOTTOINSIEMI_TEST)
+	$(CC) $(MY_CFLAGS) $(CFLAGS) -o $(EXE_SOTTOINSIEMI_TEST) $(OBJ_SOTTOINSIEMI) $(OBJ_SOTTOINSIEMI_TEST)
 
 # Clean all the generated files
 clean:
@@ -98,5 +115,5 @@ help:
 	@echo
 
 # Define 'all' target to build the program by default
-all: $(EXE_DISPOSIZIONI_TEST) $(EXE_DISPOSIZIONI_RPT_TEST) $(EXE_PERMUTAZIONI_TEST) $(EXE_PERMUTAZIONI_RPT_TEST)
+all: $(EXE_DISPOSIZIONI_TEST) $(EXE_DISPOSIZIONI_RPT_TEST) $(EXE_PERMUTAZIONI_TEST) $(EXE_PERMUTAZIONI_RPT_TEST) $(EXE_SOTTOINSIEMI_TEST)
 
