@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -g -O2
+CFLAGS = -g -O2 -Wall -std=c99 -pedantic
 OBJDIR = build
 BINDIR = bin
 SRCEXTS = .c
@@ -22,16 +22,21 @@ OBJ_VALUTAZIONESOT_SMALL_TEST = $(OBJDIR)/ValutazioneSotSmallTest.o
 OBJ_BANDODISREP = $(OBJDIR)/BandoDisRep.o
 OBJ_BANDODISREP_TEST = $(OBJDIR)/BandoDisRepTest.o
 
+# Define object files for BandoStabilisceBudget
+OBJ_BANDOSTABILISCEBUDGET = $(OBJDIR)/BandoStabilisceBudget.o
+
 # Define the final executable files
 EXE_VALUTAZIONEPER_NOGREEDY_TEST = $(BINDIR)/ValutazionePerNoGreedyTest
 EXE_VALUTAZIONESOT_NOGREEDY_TEST = $(BINDIR)/ValutazioneSotNoGreedyTest
 EXE_VALUTAZIONESOT_SMALL_TEST = $(BINDIR)/ValutazioneSotSmallTest
 EXE_BANDODISREP_TEST = $(BINDIR)/BandoDisRepTest
+EXE_BANDOSTABILISCEBUDGET = $(BINDIR)/BandoStabilisceBudget
 
 # Compile only the objects
 objs: $(OBJ_VALUTAZIONEPER) $(OBJ_VALUTAZIONEPER_NOGREEDY_TEST) \
       $(OBJ_VALUTAZIONESOT) $(OBJ_VALUTAZIONESOT_NOGREEDY_TEST) $(OBJ_VALUTAZIONESOT_SMALL_TEST) \
-      $(OBJ_BANDODISREP) $(OBJ_BANDODISREP_TEST)
+      $(OBJ_BANDODISREP) $(OBJ_BANDODISREP_TEST) \
+      $(OBJ_BANDOSTABILISCEBUDGET)
 
 # ValutazionePer object
 $(OBJDIR)/ValutazionePer.o: ValutazionePer.c
@@ -61,6 +66,10 @@ $(OBJDIR)/BandoDisRep.o: BandoDisRep.c
 $(OBJDIR)/BandoDisRepTest.o: tests/BandoDisRepTest.c
 	$(CC) $(CFLAGS) -c tests/BandoDisRepTest.c -o $(OBJDIR)/BandoDisRepTest.o
 
+# BandoStabilisceBudget object
+$(OBJDIR)/BandoStabilisceBudget.o: BandoStabilisceBudget.c
+	$(CC) $(CFLAGS) -c BandoStabilisceBudget.c -o $(OBJDIR)/BandoStabilisceBudget.o
+
 # Linking the ValutazionePer test executable
 $(EXE_VALUTAZIONEPER_NOGREEDY_TEST): $(OBJ_VALUTAZIONEPER) $(OBJ_VALUTAZIONEPER_NOGREEDY_TEST)
 	$(CC) $(CFLAGS) -o $(EXE_VALUTAZIONEPER_NOGREEDY_TEST) $(OBJ_VALUTAZIONEPER) $(OBJ_VALUTAZIONEPER_NOGREEDY_TEST)
@@ -76,6 +85,10 @@ $(EXE_VALUTAZIONESOT_SMALL_TEST): $(OBJ_VALUTAZIONESOT) $(OBJ_VALUTAZIONESOT_SMA
 # Linking the BandoDisRep test executable
 $(EXE_BANDODISREP_TEST): $(OBJ_BANDODISREP) $(OBJ_BANDODISREP_TEST)
 	$(CC) $(CFLAGS) -o $(EXE_BANDODISREP_TEST) $(OBJ_BANDODISREP) $(OBJ_BANDODISREP_TEST)
+
+# Linking the BandoStabilisceBudget executable
+$(EXE_BANDOSTABILISCEBUDGET): $(OBJ_BANDOSTABILISCEBUDGET)
+	$(CC) $(CFLAGS) -o $(EXE_BANDOSTABILISCEBUDGET) $(OBJ_BANDOSTABILISCEBUDGET)
 
 # Clean all the generated files
 clean:
@@ -98,5 +111,5 @@ help:
 	@echo
 
 # Define 'all' target to build the program by default
-all: $(EXE_VALUTAZIONEPER_NOGREEDY_TEST) $(EXE_VALUTAZIONESOT_NOGREEDY_TEST) $(EXE_VALUTAZIONESOT_SMALL_TEST) $(EXE_BANDODISREP_TEST)
+all: $(EXE_VALUTAZIONEPER_NOGREEDY_TEST) $(EXE_VALUTAZIONESOT_NOGREEDY_TEST) $(EXE_VALUTAZIONESOT_SMALL_TEST) $(EXE_BANDODISREP_TEST) $(EXE_BANDOSTABILISCEBUDGET)
 

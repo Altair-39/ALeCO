@@ -19,6 +19,8 @@ void swap(size_t *a, size_t i, size_t j) {
 
 char *spazioStatiOut(GenPair *area0, GenPair *area1, GenPair *area2,
                      size_t *disposizione, size_t length) {
+  size_t firstValue, secondValue;
+
   char *result = (char *)malloc(BUFFER_SIZE);
   if (!result)
     return NULL;
@@ -29,25 +31,24 @@ char *spazioStatiOut(GenPair *area0, GenPair *area1, GenPair *area2,
   strcpy(result, "[");
 
   while (i < length) {
-    int firstValue, secondValue;
     switch (i) {
     case 0:
       firstValue = *(int *)area0[disposizione[i]].first;
       secondValue = *(int *)area0[disposizione[i]].second;
-      snprintf(buffer, BUFFER_SIZE, "%zu:(%d,%d),", disposizione[i], firstValue,
-               secondValue);
+      snprintf(buffer, BUFFER_SIZE, "%zu:(%ld,%ld),", disposizione[i],
+               firstValue, secondValue);
       break;
     case 1:
       firstValue = *(int *)area1[disposizione[i]].first;
       secondValue = *(int *)area1[disposizione[i]].second;
-      snprintf(buffer, BUFFER_SIZE, "%zu:(%d,%d),", disposizione[i], firstValue,
-               secondValue);
+      snprintf(buffer, BUFFER_SIZE, "%zu:(%ld,%ld),", disposizione[i],
+               firstValue, secondValue);
       break;
     case 2:
       firstValue = *(int *)area2[disposizione[i]].first;
       secondValue = *(int *)area2[disposizione[i]].second;
-      snprintf(buffer, BUFFER_SIZE, "%zu:(%d,%d),", disposizione[i], firstValue,
-               secondValue);
+      snprintf(buffer, BUFFER_SIZE, "%zu:(%ld,%ld),", disposizione[i],
+               firstValue, secondValue);
       break;
     default:
       continue;
