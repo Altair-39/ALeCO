@@ -19,23 +19,23 @@
 
 size_t count = 0;
 
-void swap(size_t *a, size_t i, size_t j) {
+void swap(int *a, int i, int j) {
   size_t tmp;
   tmp = a[i];
   a[i] = a[j];
   a[j] = tmp;
 }
 
-void print_array(size_t *array, size_t length) {
+void print_array(int *array, int length) {
   size_t i = 0;
   while (i < length) {
-    printf("%zu ", array[i]);
+    printf("%d ", array[i]);
     i++;
   }
   printf("\n");
 }
 
-char *toString(size_t *a, int k) {
+char *toString(int *a, int k) {
   size_t i = 0;
   if (k == 0) {
     char *emptyResult = (char *)malloc(3);
@@ -51,7 +51,7 @@ char *toString(size_t *a, int k) {
 
   char buffer[12];
   while (i < k) {
-    sprintf(buffer, "%ld, ", a[i]);
+    sprintf(buffer, "%d, ", a[i]);
     strcat(result, buffer);
     i++;
   }
@@ -69,10 +69,11 @@ char *toString(size_t *a, int k) {
  * visita dell'albero degli stati.
  */
 
-void risposte(size_t *a, size_t *soluzione, size_t j, size_t k, size_t length) {
+void risposte(int *a, int *soluzione, int j, int k, int length) {
   size_t i = 0;
+  char *ris;
   if (j == k) {
-    char *ris = toString(soluzione, k);
+    ris = toString(soluzione, k);
     if (ris) {
       printf("%s + n.ro: %ld \n", ris, ++count);
       free(ris);

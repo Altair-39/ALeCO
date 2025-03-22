@@ -1,9 +1,8 @@
-
 # Ensure directories for object and binary files exist
 OBJDIR = build
 BINDIR = bin
 SRCEXTS = .c 
-MY_CFLAGS = -Wall
+MY_CFLAGS = -Wall -std=c89 -pedantic
 CFLAGS = -g -O2
 CC = gcc
 RM = rm -f

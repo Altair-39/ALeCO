@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void swap(size_t *array, size_t i, size_t j) {
+void swap(int *array, int i, int j) {
   size_t tmp;
   tmp = array[i];
   array[i] = array[j];
@@ -18,13 +18,13 @@ void swap(size_t *array, size_t i, size_t j) {
  * delle permutazioni e' completa solo avendo completamente
  * percorso il ramo che individua quella permutazione.             */
 
-void risposte(size_t *a, size_t j, size_t k, size_t length) {
+void risposte(int *a, int j, int k, int length) {
   size_t i = j;
   size_t counter = 0;
   if (j == length) {
     printf("[");
     while (counter < length) {
-      printf("%ld", a[counter]);
+      printf("%d", a[counter]);
       if (counter != length - 1)
         printf(", ");
       counter++;

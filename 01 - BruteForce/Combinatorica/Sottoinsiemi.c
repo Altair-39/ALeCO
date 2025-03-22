@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* L'array a contiene gli elementi di cui elencare i
  * sottoinsiemi. L'array s contiene via via le funzioni
@@ -11,19 +12,19 @@
  * la sua lunghezza.
  */
 
-void toString(size_t *a, bool *r, size_t length) {
+void toString(int *a, bool *r, int length) {
   size_t i = 0;
   printf("[");
   while (i < length) {
     if (r[i]) {
-      printf("%zu ", a[i]);
+      printf("%d ", a[i]);
     }
     i++;
   }
   printf("]\n");
 }
 
-void risposta(size_t *a, bool *r, size_t j, size_t length) {
+void risposta(int *a, bool *r, int j, int length) {
   if (j == length) {
     toString(a, r, length);
   } else {
@@ -34,7 +35,8 @@ void risposta(size_t *a, bool *r, size_t j, size_t length) {
   }
 }
 
-void sottoinsiemi(size_t *a, size_t length) {
+void sottoinsiemi(int *a, int length) {
   bool r[length];
+  memset(r, 0, sizeof(r)); /* metto tutto a false altrimenti valgrind piange */
   risposta(a, r, 0, length);
 }

@@ -1,10 +1,10 @@
 #include "../header/Sottoinsiemi.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int main() {
-  size_t arr1[] = {1, 2};
-  size_t arr2[] = {1, 2, 3, 4};
+  int arr1[] = {1, 2};
+  int arr2[] = {1, 2, 3, 4};
 
   printf("Sottoinsiemi di {1, 2}:\n");
   sottoinsiemi(arr1, 2);

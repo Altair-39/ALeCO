@@ -5,6 +5,6 @@
 
 extern size_t count;
 
-void risposte(size_t *a, size_t j, size_t k, size_t length);
+void risposte(int *a, int j, int k, int length);
 
 #endif // DISPOSIZIONI_H

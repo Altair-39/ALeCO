@@ -2,23 +2,22 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 int main() {
-  size_t test1[] = {1, 2};
-  size_t test2[] = {1, 2, 3};
-  size_t test3[] = {1, 2, 3, 4};
+  int test1[] = {1, 2};
+  int test2[] = {1, 2, 3};
+  int test3[] = {1, 2, 3, 4};
 
-  size_t k_values[] = {1, 2, 3, 4};
-  size_t i = 0;
+  int k_values[] = {1, 2, 3, 4};
+  int i = 0, k;
 
   while (i < sizeof(k_values) / sizeof(k_values[0])) {
-    size_t k = k_values[i];
+    k = k_values[i];
 
     printf("---------------\n");
 
     count = 0;
-    size_t *soluzione = (size_t *)malloc(k * sizeof(size_t));
+    int *soluzione = (int *)malloc(k * sizeof(int));
     if (!soluzione) {
       perror("Memory allocation failed");
       return EXIT_FAILURE;
