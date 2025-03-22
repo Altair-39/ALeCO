@@ -33,7 +33,15 @@ void swap(size_t *array, size_t i, size_t j) {
 void risposte(size_t *a, size_t *soluzioni, size_t j, size_t k, size_t length) {
   int i = 0;
   int counter;
-  if (j != length) {
+  if (j == length) {
+    printf("[");
+    for (counter = 0; counter < length; counter++) {
+      printf("%ld", soluzioni[counter]);
+      if (counter != length - 1)
+        printf(", ");
+    }
+    printf("]\n");
+  } else {
     while (i < length) {
       /* Riparte da capo a ogni livello ==> ripetizione */
       soluzioni[j] = a[i];
@@ -42,13 +50,5 @@ void risposte(size_t *a, size_t *soluzioni, size_t j, size_t k, size_t length) {
       swap(a, i, j);
       i++;
     }
-  } else {
-    printf("[");
-    for (counter = 0; counter < length; counter++) {
-      printf("%ld", soluzioni[counter]);
-      if (counter != length - 1)
-        printf(", ");
-    }
-    printf("]\n");
   }
 }

@@ -5,7 +5,7 @@
 void swap(size_t *array, size_t i, size_t j) {
   size_t tmp;
   tmp = array[i];
-array[i] = array[j];
+  array[i] = array[j];
   array[j] = tmp;
 }
 
@@ -19,17 +19,9 @@ array[i] = array[j];
  * percorso il ramo che individua quella permutazione.             */
 
 void risposte(size_t *a, size_t j, size_t k, size_t length) {
-  int i = j;
-  int counter;
-  if (j != length) {
-    while (i < length) {
-      /* Permutazioni dei restanti length - j elementi */
-      swap(a, i, j);
-      risposte(a, j + 1, k, length);
-      swap(a, i, j);
-      i++;
-    }
-  } else {
+  size_t i = j;
+  size_t counter;
+  if (j == length) {
     printf("[");
     for (counter = 0; counter < length; counter++) {
       printf("%ld", a[counter]);
@@ -37,5 +29,13 @@ void risposte(size_t *a, size_t j, size_t k, size_t length) {
         printf(", ");
     }
     printf("]\n");
+  } else {
+    while (i < length) {
+      /* Permutazioni dei restanti length - j elementi */
+      swap(a, i, j);
+      risposte(a, j + 1, k, length);
+      swap(a, i, j);
+      i++;
+    }
   }
 }

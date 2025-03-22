@@ -55,15 +55,18 @@ char *toString(size_t *a, int k) {
 
 void risposte(size_t *a, size_t j, size_t k, size_t length) {
   int i = j;
-  if (j != k) {
+  if (j == k) {
+    char *ris = toString(a, k);
+    if (ris) {
+      printf("%s + n.ro: %ld \n", ris, ++count);
+      free(ris);
+    }
+  } else {
     while (i < length) {
       swap(a, i, j);
       risposte(a, j + 1, k, length);
       swap(a, i, j);
       i++;
     }
-  } else {
-    printf("%s + n.ro: %ld \n", toString(a, k), ++count);
   }
 }
-

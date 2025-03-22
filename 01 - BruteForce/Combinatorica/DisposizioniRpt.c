@@ -66,8 +66,14 @@ char *toString(size_t *a, int k) {
  */
 
 void risposte(size_t *a, size_t *soluzione, size_t j, size_t k, size_t length) {
-  int i = 0;
-  if (j != k) {
+  size_t i = 0;
+  if (j == k) {
+    char *ris = toString(soluzione, k);
+    if (ris) {
+      printf("%s + n.ro: %ld \n", ris, ++count);
+      free(ris);
+    }
+  } else {
     /* Da capo a ogni livello ==> ripetizione */
     while (i < length) {
       soluzione[j] = a[i];
@@ -76,7 +82,5 @@ void risposte(size_t *a, size_t *soluzione, size_t j, size_t k, size_t length) {
       swap(a, i, j);
       i++;
     }
-  } else {
-    printf("%s + n.ro: %ld \n", toString(soluzione, k), ++count);
   }
 }
