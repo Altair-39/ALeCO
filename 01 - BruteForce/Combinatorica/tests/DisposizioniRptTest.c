@@ -1,8 +1,8 @@
 #include "../header/DisposizioniRpt.h"
 #include <stddef.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main() {
   size_t test1[] = {1, 2};
@@ -10,8 +10,9 @@ int main() {
   size_t test3[] = {1, 2, 3, 4};
 
   size_t k_values[] = {1, 2, 3, 4};
+  size_t i = 0;
 
-  for (size_t i = 0; i < sizeof(k_values) / sizeof(k_values[0]); i++) {
+  while (i < sizeof(k_values) / sizeof(k_values[0])) {
     size_t k = k_values[i];
 
     printf("---------------\n");
@@ -32,6 +33,7 @@ int main() {
     }
 
     free(soluzione);
+    i++;
   }
 
   return EXIT_SUCCESS;

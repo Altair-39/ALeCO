@@ -27,13 +27,16 @@ void swap(size_t *a, size_t i, size_t j) {
 }
 
 void print_array(size_t *array, size_t length) {
-  for (size_t i = 0; i < length; i++) {
+  size_t i = 0;
+  while (i < length) {
     printf("%zu ", array[i]);
+    i++;
   }
   printf("\n");
 }
 
 char *toString(size_t *a, int k) {
+  size_t i = 0;
   if (k == 0) {
     char *emptyResult = (char *)malloc(3);
     strcpy(emptyResult, "[]");
@@ -47,9 +50,10 @@ char *toString(size_t *a, int k) {
   strcpy(result, "[");
 
   char buffer[12];
-  for (int i = 0; i < k; i++) {
+  while (i < k) {
     sprintf(buffer, "%ld, ", a[i]);
     strcat(result, buffer);
+    i++;
   }
 
   result[strlen(result) - 2] = ']';

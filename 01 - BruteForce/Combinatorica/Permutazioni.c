@@ -20,13 +20,14 @@ void swap(size_t *array, size_t i, size_t j) {
 
 void risposte(size_t *a, size_t j, size_t k, size_t length) {
   size_t i = j;
-  size_t counter;
+  size_t counter = 0;
   if (j == length) {
     printf("[");
-    for (counter = 0; counter < length; counter++) {
+    while (counter < length) {
       printf("%ld", a[counter]);
       if (counter != length - 1)
         printf(", ");
+      counter++;
     }
     printf("]\n");
   } else {

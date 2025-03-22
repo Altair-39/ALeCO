@@ -31,14 +31,15 @@ void swap(size_t *array, size_t i, size_t j) {
  * percorso il ramo che individua quella permutazione.             */
 
 void risposte(size_t *a, size_t *soluzioni, size_t j, size_t k, size_t length) {
-  int i = 0;
-  int counter;
+  size_t i = 0;
+  size_t counter = 0;
   if (j == length) {
     printf("[");
-    for (counter = 0; counter < length; counter++) {
+    while (counter < length) {
       printf("%ld", soluzioni[counter]);
       if (counter != length - 1)
         printf(", ");
+      counter++;
     }
     printf("]\n");
   } else {
