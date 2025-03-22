@@ -1,3 +1,4 @@
+
 #include "../header/ValutazionePer.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -43,15 +44,15 @@ int main() {
 
   initNoGreedyTest(noGreedyTest);
 
-  printf("------------------------------------------------\n");
+  printf("\n------------------------------------------------\n");
   printf("Tutte le permutazioni generabili da noGreedyTest:\n");
   permutazioni(noGreedyTest, 0, 4);
 
-  printf("------------------------------------------------\n");
+  printf("\n------------------------------------------------\n");
   printf("Tutte le soluzioni di noGreedyTest con votoMaxConsentito = 9:\n");
   soluzioni(noGreedyTest, 9, 0, 4);
 
-  printf("------------------------------------------------\n");
+  printf("\n------------------------------------------------\n");
   printf("Risposta estratta da noGreedyTest con votoMaxConsentito = 9:\n");
 
   soluzione[0].first = &zeroInt;
@@ -60,9 +61,16 @@ int main() {
   bestSolution = risposta(noGreedyTest, soluzione, 9, 0, 4, 1);
   printf("Risposta: %s\n", spazioStatiOut(bestSolution, 1));
 
+  // Freeing memory for noGreedyTest
   for (i = 0; i < 4; i++) {
     free(noGreedyTest[i].first);
     free(noGreedyTest[i].second);
+  }
+
+  // Freeing memory for bestSolution if it was dynamically allocated
+  if (bestSolution) {
+    free(bestSolution); // Ensure that `bestSolution` is freed if allocated
+                        // dynamically
   }
 
   return EXIT_SUCCESS;

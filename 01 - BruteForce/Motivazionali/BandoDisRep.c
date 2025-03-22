@@ -24,11 +24,11 @@ char *spazioStatiOut(GenPair *area0, GenPair *area1, GenPair *area2,
     return NULL;
 
   char buffer[BUFFER_SIZE];
-  size_t i;
+  size_t i = 0;
 
   strcpy(result, "[");
 
-  for (i = 0; i < length; i++) {
+  while (i < length) {
     int firstValue, secondValue;
     switch (i) {
     case 0:
@@ -52,15 +52,17 @@ char *spazioStatiOut(GenPair *area0, GenPair *area1, GenPair *area2,
     default:
       continue;
     }
-    snprintf(result + strlen(result), BUFFER_SIZE - strlen(result) - 1, "%s", buffer);
+    snprintf(result + strlen(result), BUFFER_SIZE - strlen(result) - 1, "%s",
+             buffer);
+    i++;
   }
 
   if (result[strlen(result) - 1] == ',') {
     result[strlen(result) - 1] = '\0';
   }
-  strcat(result, "]\n");
+  strcat(result, "] ");
 
-  return result; 
+  return result;
 }
 
 /* Elenca terne (x,y,z) di progetti, in cui x e' un progetto dell'area0, y uno
@@ -76,8 +78,13 @@ char *spazioStatiOut(GenPair *area0, GenPair *area1, GenPair *area2,
 void spazioStati(GenPair *area0, GenPair *area1, GenPair *area2, size_t *a,
                  size_t j, size_t *disposizione, size_t k, size_t length) {
   size_t i = 0;
+  char *spazioS;
   if (j == k) {
-    printf("%s", spazioStatiOut(area0, area1, area2, disposizione, length));
+    spazioS = spazioStatiOut(area0, area1, area2, disposizione, length);
+    if (spazioS) {
+      printf("%s", spazioS);
+      free(spazioS);
+    }
   } else {
     while (i < length) {
       disposizione[j] = a[i];
@@ -89,18 +96,17 @@ void spazioStati(GenPair *area0, GenPair *area1, GenPair *area2, size_t *a,
   }
 }
 
-
-/* Individua una soluzione. Accumula in richiestaTotale la somma delle richieste 
- * elencate in soluzione[0..length_soluzione). Se richiestaTotale non eccede 
+/* Individua una soluzione. Accumula in richiestaTotale la somma delle richieste
+ * elencate in soluzione[0..length_soluzione). Se richiestaTotale non eccede
  * finanziabileTotale, allora e' una soluzione valida.
  */
 char *soluzioniOut(GenPair *area0, GenPair *area1, GenPair *area2,
                    size_t *soluzione, size_t finanziabileTotale,
                    size_t length_soluzione) {
   int richiestaTotale = 0;
-  size_t i;
+  size_t i = 0;
 
-  for (i = 0; i < length_soluzione; i++) {
+  while (i < length_soluzione) {
     if (i == 0) {
       richiestaTotale += *(int *)area0[soluzione[i]].first;
     } else if (i == 1) {
@@ -108,6 +114,7 @@ char *soluzioniOut(GenPair *area0, GenPair *area1, GenPair *area2,
     } else {
       richiestaTotale += *(int *)area2[soluzione[i]].first;
     }
+    i++;
   }
 
   if (richiestaTotale >= 0 && richiestaTotale <= finanziabileTotale) {
@@ -115,7 +122,8 @@ char *soluzioniOut(GenPair *area0, GenPair *area1, GenPair *area2,
     if (!result)
       return NULL;
 
-    char *stateString = spazioStatiOut(area0, area1, area2, soluzione, length_soluzione);
+    char *stateString =
+        spazioStatiOut(area0, area1, area2, soluzione, length_soluzione);
     if (!stateString) {
       free(result);
       return NULL;
@@ -131,78 +139,105 @@ char *soluzioniOut(GenPair *area0, GenPair *area1, GenPair *area2,
   return NULL;
 }
 
-/* Genera tutte le combinazioni di "soluzione" (non solo disposizioni con ripetizione). 
- * Ogni soluzione è un'istanza di a[0..length_soluzione) che non eccede finanziabileTotale.
+/* Genera tutte le combinazioni di "soluzione" (non solo disposizioni con
+ * ripetizione). Ogni soluzione è un'istanza di a[0..length_soluzione) che non
+ * eccede finanziabileTotale.
  */
 void soluzioni(GenPair *area0, GenPair *area1, GenPair *area2, size_t *a,
-               size_t length_a, size_t *soluzione, size_t length_soluzione, 
+               size_t length_a, size_t *soluzione, size_t length_soluzione,
                size_t finanziabileTotale, size_t j) {
+  size_t i = 0;
   if (j == length_soluzione) {
-    char *result = soluzioniOut(area0, area1, area2, soluzione, finanziabileTotale, length_soluzione);
+    char *result = soluzioniOut(area0, area1, area2, soluzione,
+                                finanziabileTotale, length_soluzione);
     if (result != NULL) {
       printf("%s", result);
       free(result);
     }
   } else {
-    for (size_t i = 0; i < length_a; i++) {
+    while (i < length_a) {
       soluzione[j] = a[i];
       swap(a, i, j);
-      soluzioni(area0, area1, area2, a, length_a, soluzione, length_soluzione, finanziabileTotale, j + 1);
+      soluzioni(area0, area1, area2, a, length_a, soluzione, length_soluzione,
+                finanziabileTotale, j + 1);
       swap(a, i, j);
+      i++;
     }
   }
 }
 
 /* Individua una risposta migliore */
 char *rispostaOut(GenPair *area0, GenPair *area1, GenPair *area2,
-                  size_t finanziabileTotale, size_t *risposta, size_t length_risposta,
-                  size_t *soluzione, size_t length_soluzione) {
+                  size_t finanziabileTotale, size_t *risposta,
+                  size_t length_risposta, size_t *soluzione,
+                  size_t length_soluzione) {
   size_t richiestaTotale = 0;
   size_t utilitaCorrente = 0;
   size_t utilitaMaxAttuale = 0;
-  size_t i;
+  size_t i = 0;
 
-  /* Calcola richiestaTotale */
-  for (i = 0; i < length_soluzione; i++) {
+  /* Ensure soluzione and risposta are initialized */
+  if (!soluzione || !risposta)
+    return NULL;
+
+  /* Calcola richiestaTotale e utilitaCorrente */
+  while (i < length_soluzione) {
     size_t index = soluzione[i];
 
-    // Calculate richiestaTotale (financing)
-    if (i == 0 && index < 4) {
+    /* Validate index */
+    if (index >= 4)
+      continue;
+
+    /* Ensure pointers are valid before dereferencing */
+    if (i == 0 && area0[index].first) {
       richiestaTotale += *(int *)area0[index].first;
-    } else if (i == 1 && index < 4) {
+    } else if (i == 1 && area1[index].first) {
       richiestaTotale += *(int *)area1[index].first;
-    } else if (i == 2 && index < 4) {
+    } else if (i == 2 && area2[index].first) {
       richiestaTotale += *(int *)area2[index].first;
     }
 
-    // Calculate utilitaCorrente (utility)
-    if (i == 0 && index < 4) {
+    if (i == 0 && area0[index].second) {
       utilitaCorrente += *(int *)area0[index].second;
-    } else if (i == 1 && index < 4) {
+    } else if (i == 1 && area1[index].second) {
       utilitaCorrente += *(int *)area1[index].second;
-    } else if (i == 2 && index < 4) {
+    } else if (i == 2 && area2[index].second) {
       utilitaCorrente += *(int *)area2[index].second;
     }
+    i++;
   }
+
+  i = 0;
 
   /* Calcola utilitaMaxAttuale */
-  for (i = 0; i < length_risposta; i++) {
+  while (i < length_risposta) {
     size_t index = risposta[i];
 
-    // Calculate utilitaMaxAttuale (utility of the best response)
-    if (i == 0 && index < 4) {
+    /* Validate index */
+    if (index >= 4)
+      continue;
+
+    /* Ensure pointers are valid before dereferencing */
+    if (i == 0 && area0[index].second) {
       utilitaMaxAttuale += *(int *)area0[index].second;
-    } else if (i == 1 && index < 4) {
+    } else if (i == 1 && area1[index].second) {
       utilitaMaxAttuale += *(int *)area1[index].second;
-    } else if (i == 2 && index < 4) {
+    } else if (i == 2 && area2[index].second) {
       utilitaMaxAttuale += *(int *)area2[index].second;
     }
+
+    i++;
   }
 
-  /* Se richiestaTotale non è eccessiva e se utilitaMaxAttuale è inferiore a utilitaCorrente, aggiorna la risposta */
-  if (richiestaTotale <= finanziabileTotale && utilitaMaxAttuale < utilitaCorrente) {
-    for (i = 0; i < length_soluzione; i++) {
+  i = 0;
+
+  /* Se richiestaTotale non è eccessiva e se utilitaMaxAttuale è inferiore a
+   * utilitaCorrente, aggiorna la risposta */
+  if (richiestaTotale <= finanziabileTotale &&
+      utilitaMaxAttuale < utilitaCorrente) {
+    while (i < length_soluzione) {
       risposta[i] = soluzione[i];
+      i++;
     }
 
     // Allocate space for the result
@@ -212,15 +247,17 @@ char *rispostaOut(GenPair *area0, GenPair *area1, GenPair *area2,
     }
 
     // Generate the state string with spazioStatiOut
-    char *stateString = spazioStatiOut(area0, area1, area2, risposta, length_risposta);
+    char *stateString =
+        spazioStatiOut(area0, area1, area2, risposta, length_risposta);
     if (!stateString) {
-      free(result);  // Free result memory in case of error
+      free(result);
       return NULL;
     }
 
     // Format the result string
     snprintf(result, BUFFER_SIZE,
-             "%s nuova risposta con richiesta totale %ld <= %ld e utilità totale %ld.\n",
+             "%s nuova risposta con richiesta totale %ld <= %ld e utilità "
+             "totale %ld.\n",
              stateString, richiestaTotale, finanziabileTotale, utilitaCorrente);
 
     free(stateString); // Free the memory allocated for stateString
@@ -232,22 +269,25 @@ char *rispostaOut(GenPair *area0, GenPair *area1, GenPair *area2,
 
 /* Genera e verifica risposte migliori */
 void risposta(GenPair *area0, GenPair *area1, GenPair *area2, size_t *a,
-              size_t *r, size_t length_risposta, size_t *soluzione, size_t length_soluzione,
-              size_t finanziabileTotale, size_t j, size_t k, size_t length) {
+              size_t *r, size_t length_risposta, size_t *soluzione,
+              size_t length_soluzione, size_t finanziabileTotale, size_t j,
+              size_t k, size_t length) {
+  size_t i = 0;
   if (j == k) {
-    char *result = rispostaOut(area0, area1, area2, finanziabileTotale, r, length_risposta, soluzione, length_soluzione);
+    char *result = rispostaOut(area0, area1, area2, finanziabileTotale, r,
+                               length_risposta, soluzione, length_soluzione);
     if (result) {
       printf("%s", result);
       free(result);
     }
   } else {
-    for (size_t i = 0; i < length; i++) {
+    while (i < length) {
       soluzione[j] = a[i];
       swap(a, i, j);
-
-      risposta(area0, area1, area2, a, r, length_risposta, soluzione, length_soluzione,
-               finanziabileTotale, j + 1, k, length);
+      risposta(area0, area1, area2, a, r, length_risposta, soluzione,
+               length_soluzione, finanziabileTotale, j + 1, k, length);
       swap(a, i, j);
+      i++;
     }
   }
 }
