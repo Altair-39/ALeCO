@@ -2,7 +2,7 @@
 OBJDIR = build
 BINDIR = bin
 SRCEXTS = .c 
-MY_CFLAGS = -Wall -std=c89 -pedantic
+MY_CFLAGS = -Wall -std=c89
 CFLAGS = -g -O2
 CC = gcc
 RM = rm -f
