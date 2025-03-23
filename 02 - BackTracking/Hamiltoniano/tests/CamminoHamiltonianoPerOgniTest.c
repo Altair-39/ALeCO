@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void test_hamiltonian_path_exists() {
   bool *grafo[] = {
@@ -49,5 +50,5 @@ int main() {
   test_empty_graph();
   test_single_node_graph();
 
-  return 0;
+  return EXIT_SUCCESS;
 }

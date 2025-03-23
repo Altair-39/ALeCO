@@ -1,4 +1,5 @@
 #include "../header/CamminoHamiltonianoPerEsiste.h"
+#include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -14,7 +15,7 @@ int main() {
     test_empty_graph();
     test_single_node_graph();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 
