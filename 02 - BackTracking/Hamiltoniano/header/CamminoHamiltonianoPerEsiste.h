@@ -3,8 +3,8 @@
 
 #include <stdbool.h>
 
-bool risposta(bool **grafo, int *soluzione, int j, int m);
-bool completa(int j, int m);
+bool risposta(bool **grafo, int *soluzione, int j, int lenghtSoluzione);
+bool completa(int j, int lenghtSoluzione);
 bool rifiuta(bool **grafo, int *soluzione, int j);
 bool accetta(bool **grafo, int *soluzione, int j);
 void swap(int *a, int i, int j);
