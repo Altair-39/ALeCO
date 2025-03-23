@@ -1,74 +1,138 @@
 #include "../utility/header/ArrBoolInt.h"
-#include <ctime>
+#include <cstdlib>
 #include <iostream>
-#include <iterator>
 #include <list>
 #include <random>
-#include <sstream>
 #include <string>
 #include <vector>
 
 using namespace std;
 
-/** Offre il nucleo di un algoritmo iterativo che genera un spazio
- * degli stati a sottoinsiemi, risolvere Subsetsum in accordo con
- * diverse politiche di gestione dei live nodes e di scelta dell'eNode.
- *
- * Il problema e' una coppia:
- * < X[0..n) di elementi di cui formare sottoinsiemi
- * , valore S da eguagliare, sommando elementi di un sottoinsieme
- *   X[0..j) di X[0..n), se X[0..j) esiste> .
- *
- * In particolare, definisce le funzioni su cui basare una LC-search,
- * per Subsetsum, la cui misura, relativa ad un nodo x[0..j), fornisce
- * la migliore approssimazione per difetto e per eccesso del valore S.
- */
-
 class S3Rand {
-
 public:
-  void risposte(const vector<int> &insieme, int s, list<ArrBoolInt> &liveNodes) {
-    list<ArrBoolInt>::iterator it = liveNodes.begin();
-    while (it != liveNodes.end()) {
+  void risposte(const vector<int> &insieme, int s,
+                list<ArrBoolInt> &liveNodes) {
+    while (!liveNodes.empty()) {
       ArrBoolInt node = eNode(insieme, s, liveNodes);
+
       if (!completo(insieme, s, node)) {
-        if (!rifiuta(insieme, s, node, liveNodes))
-          liveNodes = espande(node, liveNodes);
-        else
-          cout << "R: " << toStringENode(insieme, node);
+        if (!rifiuta(insieme, s, node, liveNodes)) {
+          espande(node, liveNodes);
+        } else { // mai percorso
+          cout << "R: " << toStringENode(insieme, node) << std::endl;
+        }
       } else {
-        if (accetta(insieme, s, node))
-          cout << "A: " << toStringENode(insieme, node);
-        else
-          cout << "N: " << toStringENode(insieme, node);
+        if (accetta(insieme, s, node)) {
+          cout << "A: " << toStringENode(insieme, node) << endl;
+        } else {
+          cout << "N: " << toStringENode(insieme, node) << endl;
+        }
       }
-      it++;
     }
   }
 
+private:
   /* Restituisce un eNode, estratto in accordo con la politica implementata
    * dal metodo indiceENode. Prima dell'estrazione, stampa la lista dei
-   * live nodes.
-   */
+   * live nodes.                                                           */
   ArrBoolInt eNode(const vector<int> &insieme, int s,
-                   list<ArrBoolInt> liveNodes) {
-    int indiceENode, fH;
+                   list<ArrBoolInt> &liveNodes) {
+    /* Stampa dei live nodes.    */
+    cout << "Live nodes: " << toStringLiveNodes(insieme, liveNodes);
+
+    int indice = indiceENode(insieme, s, liveNodes);
     auto it = liveNodes.begin();
-
-    cout << "Live nodes: " + toStringLiveNodes(insieme, liveNodes);
-
-    indiceENode = getIndiceENode(insieme, s, liveNodes);
-    advance(it, indiceENode);
+    advance(it, indice);
     ArrBoolInt eNode = *it;
-
     liveNodes.erase(it);
 
-    fH = fCompostoH(insieme, s, eNode);
+    int fH = fCompostoH(insieme, s, eNode);
+    std::cout << " ---> " << toStringENode(insieme, eNode) << " Costo : " << fH
+              << ", Difetto: " << stimaCostoPerDifetto(insieme, fH, s, eNode)
+              << ", Eccesso: " << stimaCostoPerEccesso(insieme, fH, s, eNode)
+              << std::endl;
 
-    cout << "---> " << toStringENode(insieme, eNode) << " Costo: " << fH
-         << ", Difetto: " << stimaCostoPerDifetto(insieme, fH, s, eNode)
-         << ", Eccesso: " << stimaCostoPerEccesso(insieme, fH, s, eNode);
     return eNode;
+  }
+
+  /* L'eNode e' estratto a caso dai live nodes.  */
+  int indiceENode(const vector<int> &insieme, int s,
+                  list<ArrBoolInt> &liveNodes) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> distrib(0, liveNodes.size() - 1);
+    return distrib(gen);
+  }
+
+  bool completo(const vector<int> &insieme, int s, const ArrBoolInt &eNode) {
+    vector<bool> soluzione = eNode.pi0();
+    int j = eNode.pi1();
+    return soluzione.size() == j;
+  }
+
+  bool rifiuta(const vector<int> &insieme, int somma, const ArrBoolInt &eNode,
+               list<ArrBoolInt> &liveNodes) {
+    return false;
+  }
+
+  /* Estende l'elenco dei liveNodes con due figli di eNode. */
+  void espande(const ArrBoolInt &eNode, list<ArrBoolInt> &liveNodes) {
+    vector<bool> soluzione = eNode.pi0();
+    int j = eNode.pi1();
+
+    for (bool nuovoElementoSoluzione :
+         {static_cast<bool>(soluzione[j]), static_cast<bool>(!soluzione[j])}) {
+      vector<bool> nuovaSoluzione = soluzione;
+      nuovaSoluzione[j] = nuovoElementoSoluzione;
+      ArrBoolInt nuovoLiveNode(nuovaSoluzione, j + 1);
+      liveNodes.push_back(nuovoLiveNode);
+    }
+  }
+
+  bool accetta(const vector<int> &insieme, int somma, const ArrBoolInt &eNode) {
+    vector<bool> soluzione = eNode.pi0();
+    int j = eNode.pi1();
+
+    int sommaENode = 0;
+    for (int i = 0; i < j; i++) {
+      sommaENode += (soluzione[i]) ? insieme[i] : 0;
+    }
+    return sommaENode == somma;
+  }
+
+  string toStringENode(const vector<int> &insieme, const ArrBoolInt &eNode) {
+    vector<bool> soluzione = eNode.pi0();
+    int j = eNode.pi1();
+    int i = 0;
+    string stringa = "[";
+    while (i < j) {
+      stringa += (soluzione[i]) ? " " + to_string(insieme[i]) + ","
+                                : "!" + to_string(insieme[i]) + ",";
+      i++;
+    }
+
+    if (stringa.back() == ',') {
+      stringa.pop_back();
+    }
+    return stringa + "]";
+  }
+
+  /* Restituisce il costo noto di soluzione[0..j) in liveNode, ovvero
+   * l'analogo di FH(soluzione[0..j)).                                       */
+
+  int fCompostoH(const vector<int> &insieme, int s,
+                 const ArrBoolInt &liveNode) {
+    vector<bool> soluzione = liveNode.pi0();
+    int j = liveNode.pi1();
+    int i = 0;
+
+    int fCompostoH = 0;
+    while (i < j) {
+      fCompostoH += (soluzione[i]) ? insieme[i] : 0;
+      i++;
+    }
+
+    return fCompostoH;
   }
 
   /* Restituisce il valore G(soluzione[0..j))-insieme[split],
@@ -78,19 +142,18 @@ public:
    * aggiungendo insieme[j..split) non si supera S, mentre
    * aggiungendo insieme[j..split] si ottiene almeno S.
    *
-   * E' ispirato all'Algoritmo 8.1 di Horowitz di nome UBound.
-   */
+   * E' ispirato all'Algoritmo 8.1 di Horowitz di nome UBound. */
   int stimaCostoPerDifetto(const vector<int> &insieme, int fH, int s,
-                           ArrBoolInt liveNode) {
+                           const ArrBoolInt &liveNode) {
     int j = liveNode.pi1();
-    int i = j;
-    int costoLiveNode = fH;
-    bool incrementa = true;
 
-    while (i < (int)insieme.size() && incrementa) {
+    int costoLiveNode = fH;
+    int i = j;
+    bool incrementa = true;
+    while (i < insieme.size() && incrementa) {
       incrementa = (costoLiveNode + insieme[i] < s);
       if (incrementa) {
-        costoLiveNode += insieme[i] < s;
+        costoLiveNode += insieme[i];
         i++;
       }
     }
@@ -106,18 +169,16 @@ public:
    *
    * E' ispirato all'Algoritmo 7.11 di Horowitz di nome Bound.
    * La differenza e' che non si fa alcun rilassamento lineare
-   * perche' conosciamo il limite S da ottenere.
-   */
-
+   * perche' conosciamo il limite S da ottenere.                */
   int stimaCostoPerEccesso(const vector<int> &insieme, int fH, int s,
-                           ArrBoolInt liveNode) {
+                           const ArrBoolInt &liveNode) {
     int j = liveNode.pi1();
-    int i = j;
-    int costoLiveNode = fH;
-    bool incrementa = false;
 
-    while (i < (int)insieme.size() && incrementa) {
-      incrementa = costoLiveNode < s;
+    int costoLiveNode = fH;
+    int i = j;
+    bool incrementa = true;
+    while (i < insieme.size() && incrementa) {
+      incrementa = (costoLiveNode < s);
       if (incrementa) {
         costoLiveNode += insieme[i];
         i++;
@@ -126,117 +187,50 @@ public:
     return costoLiveNode;
   }
 
-  /* Restituisce il costo noto di soluzione[0..j) in liveNode, ovvero
-   * l'analogo di FH(soluzione[0..j)).
-   */
-  int fCompostoH(const vector<int> &insieme, int s, ArrBoolInt liveNodes) {
-    vector<bool> soluzione = liveNodes.pi0();
-    int j = liveNodes.pi1();
-    int fCompostH = 0;
-    int i = 0;
-
-    while (i < j) {
-      fCompostH += (soluzione[i]) ? insieme[i] : 0;
-      i++;
-    }
-
-    return fCompostH;
-  }
-
-  /* Estende l'elenco dei liveNodes con due figli di eNode. */
-  list<ArrBoolInt> espande(ArrBoolInt node, list<ArrBoolInt> liveNodes) {
-    vector<bool> soluzione = node.pi0();
-    int j = node.pi1();
-    bool val = soluzione[j];
-
-    for (bool nuovoElementoSoluzione : {val, !val}) {
-      vector<bool> nuovaSoluzione = soluzione;
-      nuovaSoluzione[j] = nuovoElementoSoluzione;
-
-      ArrBoolInt nuovoLiveNode(nuovaSoluzione, j + 1);
-      liveNodes.push_back(nuovoLiveNode); /* FIFO */
-    }
-    return liveNodes;
-  }
-
-  /* L'eNode e' estratto a caso dai live nodes.  */
-  int getIndiceENode(const vector<int> &insieme, int s,
-                             list<ArrBoolInt> liveNodes) {
-    random_device rd;
-    mt19937 gen(rd());
-
-    uniform_int_distribution<> distrib(0, liveNodes.size() - 1);
-
-    auto it = liveNodes.begin();
-    advance(it, distrib(gen));
-
-    return distance(liveNodes.begin(), it);
-  }
-
-  bool completo(vector<int> insieme, int s, ArrBoolInt node) {
-    int soluzioneLength = node.pi0().size();
-    int j = node.pi1();
-    return soluzioneLength == j;
-  }
-
-  bool rifiuta(vector<int> insieme, int somma, ArrBoolInt node,
-               list<ArrBoolInt> liveNodes) {
-    return false;
-  }
-
-  bool accetta(vector<int> insieme, int somma, ArrBoolInt node) {
-    vector<bool> soluzione = node.pi0();
-    int j = node.pi1();
-    int i = 0, sommaNode = 0;
-
-    while (i < j) {
-      sommaNode += (soluzione[i]) ? insieme[i] : 0;
-      i++;
-    }
-    return sommaNode == somma;
-  }
-
-private:
-  string intToString(int num) {
-    ostringstream oss;
-    oss << num;
-    return oss.str();
-  }
-
-  string toStringENode(const vector<int> &insieme, ArrBoolInt eNode) {
-    vector<bool> soluzione = eNode.pi0();
-    int j = eNode.pi1();
-
-    string stringa = "[";
-    int i = 0;
-
-    while (i < j) {
-      if (soluzione[i]) {
-        stringa += " " + intToString(insieme[i]) + ",";
-      } else {
-        stringa += "!" + intToString(insieme[i]) + ",";
-      }
-      i++;
-    }
-
-    if (!stringa.empty() && stringa.back() == ',') {
-      stringa = stringa.substr(0, stringa.length() - 1);
-    }
-
-    stringa += "]";
-    return stringa;
-  }
-
   string toStringLiveNodes(const vector<int> &insieme,
                            const list<ArrBoolInt> &liveNodes) {
     string stringa = "{";
 
-    for (auto it = liveNodes.begin(); it != liveNodes.end(); ++it) {
-      ArrBoolInt liveNode = *it;
+    for (const auto &liveNode : liveNodes) {
       stringa += toStringENode(insieme, liveNode);
     }
 
-    stringa += "}";
-    return stringa;
+    return stringa + "}";
   }
 };
+
+vector<bool> initSoluzione(size_t size) { return vector<bool>(size, false); }
+
+void testErickson() {
+  vector<int> insieme = {8, 6, 7, 5, 3, 10, 9};
+  int somma = 15;
+
+  list<ArrBoolInt> liveNodes;
+  vector<bool> soluzione = initSoluzione(insieme.size());
+  ArrBoolInt radice(soluzione, 0);
+  liveNodes.push_back(radice);
+
+  S3Rand s3Rand;
+  s3Rand.risposte(insieme, somma, liveNodes);
+  cout << "%---------------------------------" << std::endl;
+}
+
+void testHorowitz() {
+  vector<int> insieme = {24, 11, 13, 7};
+  int somma = 31;
+
+  list<ArrBoolInt> liveNodes;
+  vector<bool> soluzione = initSoluzione(insieme.size());
+  ArrBoolInt radice(soluzione, 0);
+  liveNodes.push_back(radice);
+
+  S3Rand s3Rand;
+  s3Rand.risposte(insieme, somma, liveNodes);
+  cout << "%---------------------------------" << std::endl;
+}
+
+int main() {
+  testErickson();
+  testHorowitz();
+  return EXIT_SUCCESS;
+}

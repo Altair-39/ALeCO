@@ -1,34 +1,44 @@
-# Compiler
+# Compiler and flags
 CXX = g++
+CXXFLAGS = -std=c++17 -Iinclude -I../utility
 
-# Compiler flags
-CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude
-
-# Source files
+# Directories
 SRC_DIR = .
+BUILD_DIR = build
+BIN_DIR = bin
 UTILITY_DIR = ../utility
-SRCS = $(SRC_DIR)/S3LC.cpp $(UTILITY_DIR)/ArrBoolInt.cpp
 
-# Object files
-OBJS = $(SRCS:.cpp=.o)
+# Source files (all .cpp files in SRC_DIR)
+SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 
-# Executable name
-TARGET = program
+# Target executables (one for each .cpp file)
+TARGETS = $(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%, $(SRCS))
 
-# Default target
-all: $(TARGET)
+# Object files for utility (e.g., ArrBoolInt)
+UTILITY_SRCS = $(UTILITY_DIR)/ArrBoolInt.cpp
+UTILITY_OBJS = $(patsubst $(UTILITY_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(UTILITY_SRCS))
 
-# Link the object files to create the executable
-$(TARGET): $(OBJS)
+# Default target: build all executables
+all: $(TARGETS)
+
+# Rule to create executables
+$(BIN_DIR)/%: $(BUILD_DIR)/%.o $(UTILITY_OBJS)
+	@mkdir -p $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-# Compile source files into object files
-%.o: %.cpp
+# Rule to compile source files into object files
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Clean up build files
+# Rule to compile utility files into object files
+$(BUILD_DIR)/%.o: $(UTILITY_DIR)/%.cpp
+	@mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Clean up build and bin directories
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(BUILD_DIR) $(BIN_DIR)
 
 # Phony targets
 .PHONY: all clean

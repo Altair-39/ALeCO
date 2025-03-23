@@ -7,90 +7,14 @@
 
 using namespace std;
 
-/** Propone una riflessione di natura didattica sulla soluzione al
- * problema Subsetsum tramite un algoritmo Least-Cost search.
+/** Risolve il problema Subsetsum aggiungendo una aggiungendo una fase
+ * di bound all'algorimto LIFO per Subsetsum i S3LIFO.
  *
  * Il problema e' una coppia:
  * < X[0..n) di elementi di cui formare sottoinsiemi
  * , valore S da eguagliare, sommando elementi di un sottoinsieme
- *   X[0..j) di X[0..n), se X[0..j) esiste> .
- *
- * Implementiamo l'euristica Least Cost-search su uno spazio degli
- * stati che rappresenta sottoinsiemi x[0..j) di indici {0..n-1}
- * dell'insieme X[0..n).
- *
- * 1) Definiamo il costo FH(x[0..j)) di costruire x[0..j) come:
- *
- *    FH(x[0..j)) = x[0]*X[0]+..+x[j-1]*X[j-1]
- *
- * in cui x[k]==1 codifica true e x[k]==0 codifica false.
- *
- * 2) Partendo dal valore *noto* FH(x[0..j)), lo scopo e'ottenere S
- * con gli elementi che, alla fine, x[0..j) conterra'. Con uno sforzo
- * computazionale accettabile, possiamo chiederci se sia possibile
- * estendere x[0..j) con elementi opportuni, che esso non contenga
- * ancora, ed approssimare per eccesso, nel modo migliore, il valore S
- * come segue:
- *
- *   S <= FH(x[0..j))+(X[j]+..+X[split-1]+X[split])
- *
- * dato un indice split opportuno. Analogamente, l'esstensione di
- * x[0..j) puo' essere "fermata un passo prima" ed ottenere la migliore
- * approssimazione per difetto di S, come segue:
- *
- *
- *  FH(x[0..j))+(X[j]+..+X[split-1]) <= S  .
- *
- * Se definiamo:
- *
- *       G(x[0..j)) = X[j]+..+X[split-1]+X[split]
- *
- * identificare l'intervallo:
- *
- *      FH(x[0..j))+(X[j]+..+X[split-1])
- *           <= S <= FH(x[0..j))+(X[j]+..+X[split-1]+X[split])
- *
- * equivale a trovare, con costo computazionale oggettivamente poco
- * rilevante, un indice split opportuno per cui:
- *
- *      FH(x[0..j))+G(x[0..j))-X[split-1]
- *                <= S <= FH(x[0..j))+G(x[0..j))  .
- *
- * Invertendo i segni, possiamo usare parte della relazione appena
- * scritta:
- *
- *      -(FH(x[0..j))+G(x[0..j))) <= -S
- *
- * come funzione costo approssimata per scegliere l'eNode,
- * che sara' quello, tra i live nodes, con:
- *
- *      -(FH(x[0..j))+G(x[0..j)))
- *
- * a valore minimo.
- *
- * OSSERVAZIONE
- * Vale la pena insistere sul fatto che l'identificazione di ogni istanza
- * di x[0..j) procede per tentativi e determina la complessita' dell'intero
- * processo di ricerca.
- *
- * Il calcolo di G(X[0..j)) e' molto meno costoso perche' non richiede
- * ricerche, ma aggiunge ad x[0..j) gli elementi fino a "giusto prima", o ad
- * "appena dopo" il valore S.
- *
- * NOTA
- * La definizione della funzione costo approssimata appena sintetizzata
- * non e' tra quelle canoniche che la letteratura offre, volendo risolvere il
- * Subsetsum con un algoritmo LC-search.
- * Pero', la funzione appena definita imposta un discorso che dovrebbe
- * semplificare il passaggio ad algoritmi Branch&Bound per il Knapsack, di cui
- * Subsetsum e' un caso particolare.
- * Inoltre, la funzione appena definita offre spunti per derivare altre funzioni
- * costo e sperimentarne l'efficacia.
- *
- * NOTA
- * Nel codice che segue soluzione[0..j) gioca il ruolo di x[0..j)
- * e insieme[0..n) il ruolo di X[0..n).                                 */
-class S3LC {
+ *   X[0..j) di X[0..n), se X[0..j) esiste> .                      */
+class S3LIFOBB {
 public:
   void risposte(const vector<int> &insieme, int s,
                 list<ArrBoolInt> &liveNodes) {
@@ -100,7 +24,7 @@ public:
       if (!completo(insieme, s, node)) {
         if (!rifiuta(insieme, s, node, liveNodes)) {
           espande(node, liveNodes);
-        } else { // mai percorso
+        } else { 
           cout << "R: " << toStringENode(insieme, node) << std::endl;
         }
       } else {
@@ -137,33 +61,10 @@ private:
     return eNode;
   }
 
-  /* Restituisce l'indice al live node con costo minimo
-   * e stampa l'eNode estratto con costo e costo stimato.             */
+  /* Estrae il primo nodo di liveNodes*/
   int indiceENode(const std::vector<int> &insieme, int s,
                   const std::list<ArrBoolInt> &liveNodes) {
-    auto it = liveNodes.begin();
-    /* Assume che il primo liveNode di liveNodes sia a costo minimo. */
-    int indiceLiveNodeCostoMinimo = 0;
-    ArrBoolInt liveNode = *it;
-
-    int fH = fCompostoH(insieme, s, liveNode);
-    int costoMinimo = -stimaCostoPerEccesso(insieme, fH, s, liveNode);
-
-    int indice = 1;
-    /* Cerca il liveNode a costo minimo. */
-    for (++it; it != liveNodes.end(); ++it, ++indice) {
-      liveNode = *it;
-
-      fH = fCompostoH(insieme, s, liveNode);
-      int costoLiveNode = -stimaCostoPerEccesso(insieme, fH, s, liveNode);
-
-      if (costoLiveNode < costoMinimo) {
-        indiceLiveNodeCostoMinimo = indice;
-        costoMinimo = costoLiveNode;
-      }
-    }
-
-    return indiceLiveNodeCostoMinimo;
+    return 0;
   }
 
   bool completo(const vector<int> &insieme, int s, const ArrBoolInt &eNode) {
@@ -174,9 +75,13 @@ private:
 
   bool rifiuta(const vector<int> &insieme, int somma, const ArrBoolInt &eNode,
                list<ArrBoolInt> &liveNodes) {
-    return false;
+    int fHDiENode = fCompostoH(insieme, somma, eNode);
+    int costoPerDifetto =
+        stimaCostoPerDifetto(insieme, fHDiENode, somma, eNode);
+    int costoPerEccesso =
+        stimaCostoPerEccesso(insieme, fHDiENode, somma, eNode);
+    return !(costoPerDifetto <= somma && somma <= costoPerEccesso);
   }
-
   /* Estende l'elenco dei liveNodes con due figli di eNode. */
   void espande(const ArrBoolInt &eNode, list<ArrBoolInt> &liveNodes) {
     vector<bool> soluzione = eNode.pi0();
@@ -187,7 +92,7 @@ private:
       vector<bool> nuovaSoluzione = soluzione;
       nuovaSoluzione[j] = nuovoElementoSoluzione;
       ArrBoolInt nuovoLiveNode(nuovaSoluzione, j + 1);
-      liveNodes.push_back(nuovoLiveNode);
+      liveNodes.push_front(nuovoLiveNode); /* LIFO */
     }
   }
 
@@ -312,8 +217,8 @@ void testErickson() {
   ArrBoolInt radice(soluzione, 0);
   liveNodes.push_back(radice);
 
-  S3LC s3LC;
-  s3LC.risposte(insieme, somma, liveNodes);
+  S3LIFOBB s3LIFOBB;
+  s3LIFOBB.risposte(insieme, somma, liveNodes);
   cout << "%---------------------------------" << endl;
 }
 
@@ -326,8 +231,8 @@ void testHorowitz() {
   ArrBoolInt radice(soluzione, 0);
   liveNodes.push_back(radice);
 
-  S3LC s3LC;
-  s3LC.risposte(insieme, somma, liveNodes);
+  S3LIFOBB s3LIFOBB;
+  s3LIFOBB.risposte(insieme, somma, liveNodes);
   cout << "%---------------------------------" << endl;
 }
 
