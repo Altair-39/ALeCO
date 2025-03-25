@@ -37,6 +37,7 @@ bool risposta(bool **grafo, int *colori, int *soluzione, int j,
   } else {
     acc = accetta(grafo, soluzione, j, lengthGrafo);
     if (acc) {
+      print_solution(soluzione, j);
     }
     return acc;
   }
@@ -98,4 +99,3 @@ void swap(int *soluzione, int i, int j) {
   soluzione[i] = soluzione[j];
   soluzione[j] = tmp;
 }
-

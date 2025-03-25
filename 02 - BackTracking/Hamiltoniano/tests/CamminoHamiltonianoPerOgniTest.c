@@ -49,6 +49,5 @@ int main() {
   test_hamiltonian_path_does_not_exist();
   test_empty_graph();
   test_single_node_graph();
-
   return EXIT_SUCCESS;
 }
