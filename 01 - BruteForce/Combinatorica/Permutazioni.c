@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void swap(int *array, int i, int j) {
+static void swap(int *array, int i, int j) {
   size_t tmp;
   tmp = array[i];
   array[i] = array[j];

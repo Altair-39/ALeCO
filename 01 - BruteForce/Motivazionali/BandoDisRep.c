@@ -6,7 +6,7 @@
 
 #define BUFFER_SIZE 1024
 
-void swap(size_t *a, size_t i, size_t j) {
+static void swap(size_t *a, size_t i, size_t j) {
   size_t tmp;
   tmp = a[i];
   a[i] = a[j];
@@ -101,7 +101,7 @@ void spazioStati(GenPair *area0, GenPair *area1, GenPair *area2, size_t *a,
  * elencate in soluzione[0..length_soluzione). Se richiestaTotale non eccede
  * finanziabileTotale, allora e' una soluzione valida.
  */
-char *soluzioniOut(GenPair *area0, GenPair *area1, GenPair *area2,
+static char *soluzioniOut(GenPair *area0, GenPair *area1, GenPair *area2,
                    size_t *soluzione, size_t finanziabileTotale,
                    size_t length_soluzione) {
   int richiestaTotale = 0;
@@ -168,7 +168,7 @@ void soluzioni(GenPair *area0, GenPair *area1, GenPair *area2, size_t *a,
 }
 
 /* Individua una risposta migliore */
-char *rispostaOut(GenPair *area0, GenPair *area1, GenPair *area2,
+static char *rispostaOut(GenPair *area0, GenPair *area1, GenPair *area2,
                   size_t finanziabileTotale, size_t *risposta,
                   size_t length_risposta, size_t *soluzione,
                   size_t length_soluzione) {

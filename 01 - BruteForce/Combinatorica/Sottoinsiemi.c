@@ -12,7 +12,7 @@
  * la sua lunghezza.
  */
 
-void toString(int *a, bool *r, int length) {
+static void toString(int *a, bool *r, int length) {
   size_t i = 0;
   printf("[");
   while (i < length) {
@@ -24,7 +24,7 @@ void toString(int *a, bool *r, int length) {
   printf("]\n");
 }
 
-void risposta(int *a, bool *r, int j, int length) {
+static void risposta(int *a, bool *r, int j, int length) {
   if (j == length) {
     toString(a, r, length);
   } else {

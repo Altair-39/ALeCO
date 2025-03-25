@@ -19,7 +19,7 @@
 
 size_t count = 0;
 
-void swap(int *a, int i, int j) {
+static void swap(int *a, int i, int j) {
   size_t tmp;
   tmp = a[i];
   a[i] = a[j];
@@ -35,7 +35,7 @@ void print_array(int *array, int length) {
   printf("\n");
 }
 
-char *toString(int *a, int k) {
+static char *toString(int *a, int k) {
   size_t i = 0;
   if (k == 0) {
     char *emptyResult = (char *)malloc(3);
