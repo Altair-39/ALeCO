@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class SottoinsiemiIterFIFO {
+class PermutazioniIterFIFO {
 
 public:
   int conta = 0;
@@ -70,106 +70,104 @@ private:
   /* Implementa l'invariante di una visita in ampiezza dello spazio
    * degli stati. In particolare, tratta l'elenco dei liveNodes
    * come una coda, accodando i figli dell'attuale eNode.          */
- 
-void espande(const ArrIntInt& eNode, std::list<ArrIntInt>& liveNodes) {
+
+  void espande(const ArrIntInt &eNode, std::list<ArrIntInt> &liveNodes) {
     vector<int> soluzione = eNode.pi0();
     int j = eNode.pi1();
 
     int i = j;
     while (i < soluzione.size()) {
-        swap(soluzione[i], soluzione[j]);
+      swap(soluzione[i], soluzione[j]);
 
-        vector<int> nuovaSoluzione = soluzione; 
-        ArrIntInt nuovoLiveNode(nuovaSoluzione, j + 1);
+      vector<int> nuovaSoluzione = soluzione;
+      ArrIntInt nuovoLiveNode(nuovaSoluzione, j + 1);
 
-        liveNodes.push_back(nuovoLiveNode);
+      liveNodes.push_back(nuovoLiveNode);
 
-        swap(soluzione[i], soluzione[j]);
-        i++;
+      swap(soluzione[i], soluzione[j]);
+      i++;
     }
-}
+  }
 
   /* Generando tutto lo spazio delle permutazioni, non appena
    * una soluzione e' completa non possiamo far altro che accettare. */
   bool accetta() { return true; }
 
-
-string toStringENode(const ArrIntInt& node) {
-    vector<int> soluzione = node.pi0(); 
-    int j = node.pi1(); 
+  string toStringENode(const ArrIntInt &node) {
+    vector<int> soluzione = node.pi0();
+    int j = node.pi1();
 
     string result = "{ ";
     for (size_t i = 0; i < soluzione.size(); i++) {
-        result += to_string(soluzione[i]); 
-        if (i < soluzione.size() - 1) 
-            result += ", "; 
+      result += to_string(soluzione[i]);
+      if (i < soluzione.size() - 1)
+        result += ", ";
     }
-    result += " } (j = " + to_string(j) + ")"; 
+    result += " } (j = " + to_string(j) + ")";
     return result;
-}
-
+  }
 };
 
 void testCase1() {
-    cout << "Test Case 1: {1, 2, 3}" << endl;
-    vector<int> initialSolution = {1, 2, 3};
-    ArrIntInt initialNode(initialSolution, 0);
-    list<ArrIntInt> liveNodes;
-    liveNodes.push_back(initialNode);
-    SottoinsiemiIterFIFO generator;
-    generator.risposte(liveNodes);
-    cout << endl;
+  cout << "Test Case 1: {1, 2, 3}" << endl;
+  vector<int> initialSolution = {1, 2, 3};
+  ArrIntInt initialNode(initialSolution, 0);
+  list<ArrIntInt> liveNodes;
+  liveNodes.push_back(initialNode);
+  PermutazioniIterFIFO generator;
+  generator.risposte(liveNodes);
+  cout << endl;
 }
 
 void testCase2() {
-    cout << "Test Case 2: {4, 5}" << endl;
-    vector<int> initialSolution = {4, 5};
-    ArrIntInt initialNode(initialSolution, 0);
-    list<ArrIntInt> liveNodes;
-    liveNodes.push_back(initialNode);
-    SottoinsiemiIterFIFO generator;
-    generator.risposte(liveNodes);
-    cout << endl;
+  cout << "Test Case 2: {4, 5}" << endl;
+  vector<int> initialSolution = {4, 5};
+  ArrIntInt initialNode(initialSolution, 0);
+  list<ArrIntInt> liveNodes;
+  liveNodes.push_back(initialNode);
+  PermutazioniIterFIFO generator;
+  generator.risposte(liveNodes);
+  cout << endl;
 }
 
 void testCase3() {
-    cout << "Test Case 3: {1, 2, 3, 4}" << endl;
-    vector<int> initialSolution = {1, 2, 3, 4};
-    ArrIntInt initialNode(initialSolution, 0);
-    list<ArrIntInt> liveNodes;
-    liveNodes.push_back(initialNode);
-    SottoinsiemiIterFIFO generator;
-    generator.risposte(liveNodes);
-    cout << endl;
+  cout << "Test Case 3: {1, 2, 3, 4}" << endl;
+  vector<int> initialSolution = {1, 2, 3, 4};
+  ArrIntInt initialNode(initialSolution, 0);
+  list<ArrIntInt> liveNodes;
+  liveNodes.push_back(initialNode);
+  PermutazioniIterFIFO generator;
+  generator.risposte(liveNodes);
+  cout << endl;
 }
 
 void testCase4() {
-    cout << "Test Case 4: {10, 20, 30}" << endl;
-    vector<int> initialSolution = {10, 20, 30};
-    ArrIntInt initialNode(initialSolution, 0);
-    list<ArrIntInt> liveNodes;
-    liveNodes.push_back(initialNode);
-    SottoinsiemiIterFIFO generator;
-    generator.risposte(liveNodes);
-    cout << endl;
+  cout << "Test Case 4: {10, 20, 30}" << endl;
+  vector<int> initialSolution = {10, 20, 30};
+  ArrIntInt initialNode(initialSolution, 0);
+  list<ArrIntInt> liveNodes;
+  liveNodes.push_back(initialNode);
+  PermutazioniIterFIFO generator;
+  generator.risposte(liveNodes);
+  cout << endl;
 }
 
 void testCase5() {
-    cout << "Test Case 5: {0, 1, 2, 3, 4}" << endl;
-    vector<int> initialSolution = {0, 1, 2, 3, 4};
-    ArrIntInt initialNode(initialSolution, 0);
-    list<ArrIntInt> liveNodes;
-    liveNodes.push_back(initialNode);
-    SottoinsiemiIterFIFO generator;
-    generator.risposte(liveNodes);
-    cout << endl;
+  cout << "Test Case 5: {0, 1, 2, 3, 4}" << endl;
+  vector<int> initialSolution = {0, 1, 2, 3, 4};
+  ArrIntInt initialNode(initialSolution, 0);
+  list<ArrIntInt> liveNodes;
+  liveNodes.push_back(initialNode);
+  PermutazioniIterFIFO generator;
+  generator.risposte(liveNodes);
+  cout << endl;
 }
 
 int main() {
-    testCase1();
-    testCase2();
-    testCase3();
-    testCase4();
-    testCase5();
-    return EXIT_SUCCESS;
+  testCase1();
+  testCase2();
+  testCase3();
+  testCase4();
+  testCase5();
+  return EXIT_SUCCESS;
 }
