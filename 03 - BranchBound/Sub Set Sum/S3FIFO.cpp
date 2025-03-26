@@ -26,7 +26,7 @@ public:
         if (!rifiuta(insieme, s, node, liveNodes)) {
           espande(node, liveNodes);
         } else { // mai percorso
-          cout << "R: " << toStringENode(insieme, node) << std::endl;
+          cout << "R: " << toStringENode(insieme, node) << endl;
         }
       } else {
         if (accetta(insieme, s, node)) {
@@ -89,7 +89,7 @@ private:
       vector<bool> nuovaSoluzione = soluzione;
       nuovaSoluzione[j] = nuovoElementoSoluzione;
       ArrBoolInt nuovoLiveNode(nuovaSoluzione, j + 1);
-      liveNodes.push_front(nuovoLiveNode);
+      liveNodes.push_back(nuovoLiveNode);
     }
   }
 

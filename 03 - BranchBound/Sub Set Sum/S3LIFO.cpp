@@ -26,7 +26,7 @@ public:
         if (!rifiuta(insieme, s, node, liveNodes)) {
           espande(node, liveNodes);
         } else { // mai percorso
-          cout << "R: " << toStringENode(insieme, node) << std::endl;
+          cout << "R: " << toStringENode(insieme, node) << endl;
         }
       } else {
         if (accetta(insieme, s, node)) {

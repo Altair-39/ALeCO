@@ -24,8 +24,8 @@ public:
       if (!completo(insieme, s, node)) {
         if (!rifiuta(insieme, s, node, liveNodes)) {
           espande(node, liveNodes);
-        } else { 
-          cout << "R: " << toStringENode(insieme, node) << std::endl;
+        } else {
+          cout << "R: " << toStringENode(insieme, node) << endl;
         }
       } else {
         if (accetta(insieme, s, node)) {
