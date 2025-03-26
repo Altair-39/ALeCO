@@ -102,7 +102,7 @@ private:
   }
 };
 
-void testCase(const std::vector<bool> &initialSolution) {
+void testCase(const vector<bool> &initialSolution) {
   cout << "\nTesting with initial solution: ";
   for (bool val : initialSolution) {
     cout << (val ? "1 " : "0 ");

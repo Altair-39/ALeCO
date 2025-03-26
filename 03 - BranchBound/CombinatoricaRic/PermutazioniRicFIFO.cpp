@@ -8,38 +8,38 @@
 using namespace std;
 
 /* Visita ricorsivamente l'elenco dei liveNodes, finche'
-   * non si vuota. La terminazione e' assicurata dalla finitezza
-   * dello spazio degli stati. Si assume un elenco iniziale di
-   * liveNodes composto da un nodo che corrisponde alla radice
-   * dello spazio degli stati.                                    */
+ * non si vuota. La terminazione e' assicurata dalla finitezza
+ * dello spazio degli stati. Si assume un elenco iniziale di
+ * liveNodes composto da un nodo che corrisponde alla radice
+ * dello spazio degli stati.                                    */
 class PermutazioniRicFIFO {
 public:
   void risposte(list<ArrIntInt> &liveNodes) {
     ArrIntInt node = eNode(liveNodes);
-      if (!completo(node)) {
-        if (!rifiuta()) {
-          espande(node, liveNodes);
-          while (!liveNodes.empty()) {
-            risposte(liveNodes);
-          }
-        } else {
-          cout << "R: " << toStringENode(node) << endl;
+    if (!completo(node)) {
+      if (!rifiuta()) {
+        espande(node, liveNodes);
+        while (!liveNodes.empty()) {
+          risposte(liveNodes);
         }
       } else {
-        if (accetta()) {
-          cout << "A: " << toStringENode(node) << endl;
-        } else {
-          cout << "N: " << toStringENode(node) << endl;
-        }
+        cout << "R: " << toStringENode(node) << endl;
       }
-   }
+    } else {
+      if (accetta()) {
+        cout << "A: " << toStringENode(node) << endl;
+      } else {
+        cout << "N: " << toStringENode(node) << endl;
+      }
+    }
+  }
 
 private:
   /* Preleva sempre il primo elemento disponibile nello spazio
    * degli stati.                                                */
   ArrIntInt eNode(list<ArrIntInt> &liveNodes) {
     ArrIntInt node = liveNodes.front();
-    liveNodes.pop_front(); //FIFO
+    liveNodes.pop_front(); // FIFO
     return node;
   }
 
@@ -59,44 +59,42 @@ private:
   /* Implementa l'invariante di una visita in ampiezza dello spazio
    * degli stati. In particolare, tratta l'elenco dei liveNodes
    * come una coda, accodando i figli dell'attuale eNode.          */
- 
-void espande(const ArrIntInt& eNode, std::list<ArrIntInt>& liveNodes) {
+
+  void espande(const ArrIntInt &eNode, list<ArrIntInt> &liveNodes) {
     vector<int> soluzione = eNode.pi0();
     int j = eNode.pi1();
 
     int i = j;
     while (i < soluzione.size()) {
-        swap(soluzione[i], soluzione[j]);
+      swap(soluzione[i], soluzione[j]);
 
-        vector<int> nuovaSoluzione = soluzione; 
-        ArrIntInt nuovoLiveNode(nuovaSoluzione, j + 1);
+      vector<int> nuovaSoluzione = soluzione;
+      ArrIntInt nuovoLiveNode(nuovaSoluzione, j + 1);
 
-        liveNodes.push_back(nuovoLiveNode);
+      liveNodes.push_back(nuovoLiveNode);
 
-        swap(soluzione[i], soluzione[j]);
-        i++;
+      swap(soluzione[i], soluzione[j]);
+      i++;
     }
-}
+  }
 
   /* Generando tutto lo spazio delle permutazioni, non appena
    * una soluzione e' completa non possiamo far altro che accettare. */
   bool accetta() { return true; }
 
-
-string toStringENode(const ArrIntInt& node) {
-    vector<int> soluzione = node.pi0(); 
-    int j = node.pi1(); 
+  string toStringENode(const ArrIntInt &node) {
+    vector<int> soluzione = node.pi0();
+    int j = node.pi1();
 
     string result = "{ ";
     for (size_t i = 0; i < soluzione.size(); i++) {
-        result += to_string(soluzione[i]); 
-        if (i < soluzione.size() - 1) 
-            result += ", "; 
+      result += to_string(soluzione[i]);
+      if (i < soluzione.size() - 1)
+        result += ", ";
     }
-    result += " } (j = " + to_string(j) + ")"; 
+    result += " } (j = " + to_string(j) + ")";
     return result;
-}
-
+  }
 };
 
 void testCase1() {

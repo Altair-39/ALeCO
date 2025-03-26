@@ -60,7 +60,7 @@ private:
    * degli stati. In particolare, tratta l'elenco dei liveNodes
    * come una coda, accodando i figli dell'attuale eNode.          */
 
-  void espande(const ArrIntInt &eNode, std::list<ArrIntInt> &liveNodes) {
+  void espande(const ArrIntInt &eNode, list<ArrIntInt> &liveNodes) {
     vector<int> soluzione = eNode.pi0();
     int j = eNode.pi1();
 
