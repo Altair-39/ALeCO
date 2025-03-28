@@ -53,7 +53,7 @@ public:
     }
   }
 
-private:
+protected:
   /* Restituisce un eNode, estratto in accordo con la politica implementata
    * dal metodo indiceENode. Prima dell'estrazione, stampa la lista dei
    * live nodes.                                                           */
@@ -76,7 +76,7 @@ private:
    * liveNodes. Per ogni liveNode, la stima del profitto ottimale usa
    * il profitto assicurato dal nodo stesso e raccolto in profittoAssicurato. */
 
-  size_t indiceENode(IstanzaKP iKPBB, list<ArrBoolInt> liveNodes) { return 0; }
+  virtual size_t indiceENode(IstanzaKP iKPBB, list<ArrBoolInt> liveNodes) { return 0; }
 
   /* Rifiuta eNode se non e' una soluzione: il suo peso supera quello
    * massimo ammissibile.                                              */
@@ -287,7 +287,6 @@ private:
     return oss.str();
   }
 };
-
 
 int main() {
     int capacity = 2821;  
